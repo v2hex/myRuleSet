@@ -29,7 +29,7 @@ jobs:
           sort -u clean.conf > my-rules.conf
           
           # 5. 可选：去除可能存在的 pre-matching 标记
-          sed -i 's/,pre-matching//g' my-rules.conf
+          sed -i 's/,pre-matching//g' my-reject.conf
           
           # 清理临时文件
           rm *.tmp base.conf clean.conf
