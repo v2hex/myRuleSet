@@ -26,7 +26,7 @@ jobs:
           grep -vFf my-non-reject.conf combined.tmp > clean.conf
           
           # 4. 去重并生成最终文件
-          sort -u clean.conf > my-reject.conf
+          sort -u clean.conf > reject.conf
           
           # 清理临时文件
           rm *.tmp base.conf clean.conf
