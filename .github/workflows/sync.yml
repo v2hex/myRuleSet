@@ -35,7 +35,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add my-rules.conf
+          git add reject.conf
           # 仅在有变动时 commit，避免无效提交
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Auto-update rules"
