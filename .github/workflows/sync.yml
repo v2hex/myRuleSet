@@ -1,0 +1,46 @@
+name: Merge and Filter Rules
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天自动运行
+  workflow_dispatch:      # 支持手动点击按钮运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Process Rules
+        run: |
+          # 1. 下载基础规则 (来自外部)
+          curl -s "https://ruleset.skk.moe/List/domainset/reject.conf" > base.conf
+          
+          # 2. 合并：基础规则 + 本地自定义补充规则
+          cat base.conf my-reject.conf > combined.tmp
+          
+          # 3. 过滤：从合并后的列表中剔除本地排除列表中的内容
+          grep -vFf my-non-reject.conf combined.tmp > clean.conf
+          
+          # 4. 去重并生成最终文件
+          sort -u clean.conf > my-rules.conf
+          
+          # 5. 可选：去除可能存在的 pre-matching 标记
+          sed -i 's/,pre-matching//g' my-rules.conf
+          
+          # 清理临时文件
+          rm *.tmp base.conf clean.conf
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add my-rules.conf
+          # 仅在有变动时 commit，避免无效提交
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Auto-update rules"
+            git push
+          fi
