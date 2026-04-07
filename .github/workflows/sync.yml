@@ -26,10 +26,7 @@ jobs:
           grep -vFf my-non-reject.conf combined.tmp > clean.conf
           
           # 4. 去重并生成最终文件
-          sort -u clean.conf > my-rules.conf
-          
-          # 5. 可选：去除可能存在的 pre-matching 标记
-          sed -i 's/,pre-matching//g' my-reject.conf
+          sort -u clean.conf > my-reject.conf
           
           # 清理临时文件
           rm *.tmp base.conf clean.conf
